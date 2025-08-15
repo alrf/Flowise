@@ -72,6 +72,7 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
     const [backgroundColor, setBackgroundColor] = useState(chatbotConfig?.backgroundColor ?? defaultConfig.backgroundColor)
     const [fontSize, setFontSize] = useState(chatbotConfig?.fontSize ?? defaultConfig.fontSize)
     const [poweredByTextColor, setPoweredByTextColor] = useState(chatbotConfig?.poweredByTextColor ?? defaultConfig.poweredByTextColor)
+    const [showFooter, setShowFooter] = useState(chatbotConfig?.footer?.showFooter ?? false)
 
     const getShowAgentMessagesStatus = () => {
         if (chatbotConfig?.showAgentMessages !== undefined) {
@@ -125,6 +126,9 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
             userMessage: {
                 showAvatar: false
             },
+            footer: {
+                showFooter: false
+            },
             textInput: {}
         }
         if (title) obj.title = title
@@ -137,6 +141,7 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
         if (backgroundColor) obj.backgroundColor = backgroundColor
         if (fontSize) obj.fontSize = fontSize
         if (poweredByTextColor) obj.poweredByTextColor = poweredByTextColor
+        if (showFooter) obj.footer.showFooter = showFooter
 
         if (botMessageBackgroundColor) obj.botMessage.backgroundColor = botMessageBackgroundColor
         if (botMessageTextColor) obj.botMessage.textColor = botMessageTextColor
@@ -345,6 +350,9 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
             case 'renderHTML':
                 setRenderHTML(value)
                 break
+            case 'showFooter':
+                setShowFooter(value)
+                break
         }
     }
 
@@ -487,6 +495,7 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
                 {colorField(poweredByTextColor, 'poweredByTextColor', 'PoweredBy TextColor')}
                 {isAgentCanvas && booleanField(showAgentMessages, 'showAgentMessages', 'Show agent reasonings when using Agentflow')}
                 {booleanField(renderHTML, 'renderHTML', 'Render HTML on the chat')}
+                {booleanField(showFooter, 'showFooter', 'Show footer')}
                 {isSessionMemory &&
                     booleanField(generateNewSession, 'generateNewSession', 'Start new session when chatbot link is opened or refreshed')}
             </Card>
