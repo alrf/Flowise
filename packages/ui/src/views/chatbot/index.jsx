@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FullPageChat } from 'flowise-embed-react'
+import { FullPageChat, BubbleChat } from 'flowise-embed-react'
 import { useNavigate } from 'react-router-dom'
 
 // Project import
@@ -147,7 +147,7 @@ const ChatbotFull = () => {
                             </Box>
                         </Box>
                     ) : (
-                        <FullPageChat
+                        <BubbleChat
                             chatflowid={chatflow.id}
                             apiHost={baseURL}
                             chatflowConfig={chatbotOverrideConfig}
