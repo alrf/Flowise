@@ -13,7 +13,27 @@ type Client = {
 export class SSEStreamer implements IServerSideEventStreamer {
     clients: { [id: string]: Client } = {}
 
+    private blockedEvents = [
+        '"event":"agentFlowExecutedData"',
+        '"event":"nextAgentFlow"',
+    ]
+
+    private patchResponse(res: Response) {
+        const originalWrite = res.write.bind(res)
+        res.write = ((chunk: any, ...args: any[]) => {
+            if (typeof chunk === 'string') {
+                for (const b of this.blockedEvents) {
+                    if (chunk.includes(b)) {
+                        return true
+                    }
+                }
+            }
+            return originalWrite(chunk, ...args)
+        }) as any
+    }
+
     addExternalClient(chatId: string, res: Response) {
+        this.patchResponse(res)
         this.clients[chatId] = { clientType: 'EXTERNAL', response: res, started: false }
     }
 
