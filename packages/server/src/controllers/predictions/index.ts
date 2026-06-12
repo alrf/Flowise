@@ -33,13 +33,18 @@ const createPrediction = async (req: Request, res: Response, next: NextFunction)
         let unauthorizedOriginError = 'This site is not allowed to access this chatbot'
         logger.info(`[server]: Request originated from ${req.headers.origin || 'UNKNOWN ORIGIN'}`)
         if (chatflow.chatbotConfig) {
+            // logger.info(`[server]: chatbotConfig ${chatflow.chatbotConfig}`)
             const parsedConfig = JSON.parse(chatflow.chatbotConfig)
+            // logger.info(`[server1]: parsedConfig ${JSON.stringify(parsedConfig)}`)
             // check whether the first one is not empty. if it is empty that means the user set a value and then removed it.
             const isValidAllowedOrigins = parsedConfig.allowedOrigins?.length && parsedConfig.allowedOrigins[0] !== ''
+            // logger.info(`[server2]: allowedOrigins ${parsedConfig.allowedOrigins}`)
             unauthorizedOriginError = parsedConfig.allowedOriginsError || 'This site is not allowed to access this chatbot'
+            // logger.info(`[server3]: isValidAllowedOrigins ${isValidAllowedOrigins} -> ${req.headers.origin}`)
             if (isValidAllowedOrigins && req.headers.origin) {
                 const originHeader = req.headers.origin
                 const origin = new URL(originHeader).host
+                // logger.info(`[server4]: originHeader ${originHeader} --> origin ${origin}`)
                 isDomainAllowed =
                     parsedConfig.allowedOrigins.filter((domain: string) => {
                         try {
@@ -52,6 +57,7 @@ const createPrediction = async (req: Request, res: Response, next: NextFunction)
             }
         }
         if (isDomainAllowed) {
+            // logger.info(`[server5]: isDomainAllowed ${isDomainAllowed}`)
             const streamable = await chatflowsService.checkIfChatflowIsValidForStreaming(req.params.id)
             const isStreamingRequested = req.body.streaming === 'true' || req.body.streaming === true
             if (streamable?.isStreaming && isStreamingRequested) {
@@ -90,6 +96,7 @@ const createPrediction = async (req: Request, res: Response, next: NextFunction)
             }
         } else {
             const isStreamingRequested = req.body.streaming === 'true' || req.body.streaming === true
+            // logger.info(`[server6]: isStreamingRequested ${isStreamingRequested}`)
             if (isStreamingRequested) {
                 return res.status(StatusCodes.FORBIDDEN).send(unauthorizedOriginError)
             }
